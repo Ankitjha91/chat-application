@@ -1,0 +1,11 @@
+{
+    "CodeGPT.apiKey": "Anthropic",
+    // Enable GitHub Copilot for all languages
+    "github.copilot.enable": {
+        "*": true
+    },
+    // Enable Copilot inline suggestions
+    "github.copilot.inlineSuggest.enable": true,
+    // Ensure VS Code inline suggestions are allowed
+    "editor.inlineSuggest.enabled": true
+}
