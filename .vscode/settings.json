@@ -1,11 +1,18 @@
 {
     "CodeGPT.apiKey": "Anthropic",
-    // Enable GitHub Copilot for all languages
+
+    // --- GitHub Copilot Settings ---
     "github.copilot.enable": {
         "*": true
     },
-    // Enable Copilot inline suggestions
     "github.copilot.inlineSuggest.enable": true,
-    // Ensure VS Code inline suggestions are allowed
-    "editor.inlineSuggest.enabled": true
+    "editor.inlineSuggest.enabled": true,
+
+    // --- Git & VS Code Integration Settings ---
+    "git.enabled": true,
+    "git.decorations.enabled": true,
+    "diffEditor.renderIndicators": true,
+    "editor.glyphMargin": true,
+    "scm.diffDecorationsGutterWidth": 3,
+    "workbench.colorTheme": "Default Dark+"
 }

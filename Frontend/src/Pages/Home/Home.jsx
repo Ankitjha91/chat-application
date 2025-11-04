@@ -16,7 +16,7 @@ const Home = () => {
   const { socket, onlineUsers } = useSelector(state => state.socketReducer);
 
 
-
+  
   useEffect(() => {
     if (!isAuthenticated) return;
     dispatch(initializeSocket(userProfile?._id));

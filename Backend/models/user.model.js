@@ -19,12 +19,21 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-
     avatar: {
       type: String,
       required: false,
+      default: "", // default empty
     },
-    
+    bio: {
+      type: String,
+      required: false,
+      default: "Hey there! I'm using Chat App.",
+    },
+    status: {
+      type: String,
+      enum: ["Online", "Offline", "Busy", "Away"],
+      default: "Online",
+    },
   },
   { timestamps: true }
 );

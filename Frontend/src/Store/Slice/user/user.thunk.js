@@ -95,16 +95,29 @@ export const updateUserProfileThunk = createAsyncThunk(
   "user/updateProfile",
   async (updatedData, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.put("/users/update-profile", updatedData);
+      console.log("updateUserProfileThunk payload:", updatedData);
 
-      toast.success("Profile updated successfully!");
-      return response.data; // assuming backend returns updated user data
+      const formData = new FormData();
+
+      if (updatedData.fullName) formData.append("fullName", updatedData.fullName);
+      if (updatedData.bio) formData.append("bio", updatedData.bio);
+      if (updatedData.status) formData.append("status", updatedData.status);
+      if (updatedData.avatar) formData.append("avatar", updatedData.avatar);
+
+      const response = await axiosInstance.put("/users/update-profile", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      console.log("response from server:", response.data);
+      return response.data.user; 
     } catch (error) {
-      console.error(error);
-      const errorOutput = error?.response?.data?.errMessage || "Failed to update profile";
+      console.error("Error updating profile:", error);
+      const errorOutput =
+        error?.response?.data?.message ||
+        error?.response?.data?.errMessage ||
+        "Failed to update profile";
       toast.error(errorOutput);
       return rejectWithValue(errorOutput);
     }
   }
 );
-

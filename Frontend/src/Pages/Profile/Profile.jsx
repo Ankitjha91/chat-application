@@ -10,7 +10,6 @@ const Profile = () => {
 
   const [formData, setFormData] = useState({
     fullName: "",
-    email: "",
     bio: "",
     status: "",
     avatar: null,
@@ -20,18 +19,25 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
 
   // Set initial user data
-  useEffect(() => {
-    if (userProfile) {
-      setFormData({
-        fullName: userProfile.fullName || "",
-        email: userProfile.email || "",
-        bio: userProfile.bio || "",
-        status: userProfile.status || "",
-        avatar: null,
-      });
-      setPreview(userProfile.avatar || null);
+ useEffect(() => {
+  if (userProfile) {
+    setFormData({
+      fullName: userProfile.fullName || "",
+      bio: userProfile.bio || "",
+      status: userProfile.status || "",
+      avatar: null,
+    });
+
+    if (userProfile.avatar?.startsWith("http")) {
+      setPreview(userProfile.avatar);
+    } else if (userProfile.avatar) {
+      setPreview(`${import.meta.env.VITE_DB_ORIGIN}${userProfile.avatar}?t=${Date.now()}`);
+    } else {
+      setPreview(null);
     }
-  }, [userProfile]);
+  }
+}, [userProfile]);
+
 
   // Handle input change
   const handleChange = (e) => {
@@ -49,24 +55,18 @@ const Profile = () => {
   // Handle profile update
   const handleSave = async () => {
     try {
-      const data = new FormData();
-      data.append("fullName", formData.fullName);
-      data.append("email", formData.email);
-      data.append("bio", formData.bio);
-      data.append("status", formData.status);
-      if (formData.avatar) data.append("avatar", formData.avatar);
+      const updatedData = {
+        fullName: formData.fullName,
+        bio: formData.bio,
+        status: formData.status,
+        avatar: formData.avatar,
+      };
 
-      await axiosInstance.put("/api/v1/user/update-profile", data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
+      await dispatch(updateUserProfileThunk(updatedData)).unwrap();
       toast.success("Profile updated successfully!");
       setIsEditing(false);
-
-      // Re-fetch user data
-      dispatch(updateUserProfileThunk());
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to update profile");
+      toast.error("Failed to update profile");
     }
   };
 
@@ -105,23 +105,10 @@ const Profile = () => {
               value={formData.fullName}
               onChange={handleChange}
               disabled={!isEditing}
-              className={`w-full mt-1 p-2 border rounded-md focus:outline-none ${
-                isEditing
+              className={`w-full mt-1 p-2 border rounded-md focus:outline-none ${isEditing
                   ? "bg-white text-black border-blue-400"
                   : "bg-gray-100 text-gray-500 border-gray-300"
-              }`}
-            />
-          </div>
-
-          {/* Email */}
-          <div>
-            <label className="block text-gray-700 font-medium">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              disabled
-              className="w-full mt-1 p-2 border rounded-md bg-gray-100 text-gray-500 border-gray-300"
+                }`}
             />
           </div>
 
@@ -134,11 +121,10 @@ const Profile = () => {
               value={formData.status}
               onChange={handleChange}
               disabled={!isEditing}
-              className={`w-full mt-1 p-2 border rounded-md focus:outline-none ${
-                isEditing
+              className={`w-full mt-1 p-2 border rounded-md focus:outline-none ${isEditing
                   ? "bg-white text-black border-blue-400"
                   : "bg-gray-100 text-gray-500 border-gray-300"
-              }`}
+                }`}
             />
           </div>
 
@@ -151,11 +137,10 @@ const Profile = () => {
               onChange={handleChange}
               disabled={!isEditing}
               rows="3"
-              className={`w-full mt-1 p-2 border rounded-md focus:outline-none ${
-                isEditing
+              className={`w-full mt-1 p-2 border rounded-md focus:outline-none ${isEditing
                   ? "bg-white text-black border-blue-400"
                   : "bg-gray-100 text-gray-500 border-gray-300"
-              }`}
+                }`}
             ></textarea>
           </div>
         </div>

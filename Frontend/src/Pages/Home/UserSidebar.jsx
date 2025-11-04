@@ -81,7 +81,15 @@ const UserSidebar = () => {
           >
             <div className="avatar">
               <div className="ring-primary ring-offset-base-100 w-10 rounded-full ring ring-offset-2">
-                <img src={userProfile?.avatar} alt="Profile" />
+                <img
+                  src={
+                    userProfile?.avatar?.startsWith("http")
+                      ? userProfile.avatar
+                      : `${import.meta.env.VITE_DB_ORIGIN}${userProfile?.avatar}`
+                  }
+                  alt="User Avatar"
+                  className="w-10 h-10 rounded-full object-cover"
+                />
               </div>
             </div>
             <h2 className="text-white">{userProfile?.username}</h2>

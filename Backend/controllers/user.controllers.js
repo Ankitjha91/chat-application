@@ -3,6 +3,9 @@ import { asyncHandler } from '../utilities/asyncHandler.utility.js';
 import { errorHandler } from '../utilities/errorHandler.utility.js';
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import fs from "fs";
+import path from "path";
+
 
 
 export const register = asyncHandler(async (req, res, next) => {
@@ -151,5 +154,45 @@ export const getOtherUsers= asyncHandler(async (req, res, next) => {
     responseData: otherUsers,
   });  
 
+});
+
+// Update User Profile
+export const updateProfile = asyncHandler(async (req, res, next) => {
+  const userId = req.user?._id;
+  if (!userId) {
+    return next(new errorHandler("Unauthorized access", 401));
+  }
+
+  const { fullName, bio, status } = req.body;
+  const updates = {};
+
+  if (fullName !== undefined) updates.fullName = fullName;
+  if (bio !== undefined) updates.bio = bio;
+  if (status !== undefined) updates.status = status;
+
+  // 🖼️ If new avatar uploaded
+  if (req.file) {
+    updates.avatar = `/uploads/${req.file.filename}`;
+
+    try {
+      const existingUser = await User.findById(userId);
+      if (existingUser && existingUser.avatar && existingUser.avatar.startsWith("/uploads")) {
+        const oldFilePath = path.join(process.cwd(), existingUser.avatar);
+        if (fs.existsSync(oldFilePath)) {
+          fs.unlinkSync(oldFilePath); // delete old avatar
+        }
+      }
+    } catch (err) {
+      console.warn("Failed to delete old avatar:", err.message);
+    }
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(userId, updates, { new: true }).select("-password");
+
+  res.status(200).json({
+    success: true,
+    message: "Profile updated successfully!",
+    user: updatedUser, // ✅ FIXED: use 'user' instead of 'responseData'
+  });
 });
 

@@ -98,19 +98,18 @@ export const userSlice = createSlice({
     });
 
     // update user profile
-    builder.addCase(updateUserProfileThunk.pending, (state, action) => {
+    builder.addCase(updateUserProfileThunk.pending, (state) => {
       state.buttonloading = true;
     });
 
     builder.addCase(updateUserProfileThunk.fulfilled, (state, action) => {
       state.buttonloading = false;
-      state.userProfile = action.payload?.responseData?.user || action.payload?.user || action.payload;
+      state.userProfile = {...state.userProfile, ...action.payload,};
     });
 
-    builder.addCase(updateUserProfileThunk.rejected, (state, action) => {
+    builder.addCase(updateUserProfileThunk.rejected, (state) => {
       state.buttonloading = false;
     });
-
 
   },
 
