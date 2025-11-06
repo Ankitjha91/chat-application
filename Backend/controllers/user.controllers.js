@@ -8,6 +8,7 @@ import path from "path";
 
 
 
+
 export const register = asyncHandler(async (req, res, next) => {
   const { fullName, username, password, gender } = req.body;
 
