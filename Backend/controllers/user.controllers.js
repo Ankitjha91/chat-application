@@ -60,7 +60,7 @@ export const register = asyncHandler(async (req, res, next) => {
     .json({
       success: true,
       responseData: {
-        newUser,
+       user: newUser,
         token
       }
 
@@ -164,14 +164,32 @@ export const updateProfile = asyncHandler(async (req, res, next) => {
     return next(new errorHandler("Unauthorized access", 401));
   }
 
-  const { fullName, bio, status } = req.body;
+  const {
+    fullName,
+    username,
+    password,
+    confirmPassword,
+    bio,
+    gender,
+  } = req.body;
+
   const updates = {};
 
   if (fullName !== undefined) updates.fullName = fullName;
+  if (username !== undefined) updates.username = username;
   if (bio !== undefined) updates.bio = bio;
-  if (status !== undefined) updates.status = status;
+  if (gender !== undefined) updates.gender = gender;
 
-  // 🖼️ If new avatar uploaded
+  // 🧠 Password update handle
+  if (password && confirmPassword) {
+    if (password !== confirmPassword) {
+      return next(new errorHandler("Passwords do not match", 400));
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    updates.password = hashedPassword;
+  }
+
+  // 🖼️ Avatar update handle
   if (req.file) {
     updates.avatar = `/uploads/${req.file.filename}`;
 
@@ -188,12 +206,20 @@ export const updateProfile = asyncHandler(async (req, res, next) => {
     }
   }
 
-  const updatedUser = await User.findByIdAndUpdate(userId, updates, { new: true }).select("-password");
+  // ✅ Update user in database
+  const updatedUser = await User.findByIdAndUpdate(userId, updates, {
+    new: true,
+    runValidators: true,
+  }).select("-password");
+
+  if (!updatedUser) {
+    return next(new errorHandler("User not found", 404));
+  }
 
   res.status(200).json({
     success: true,
     message: "Profile updated successfully!",
-    user: updatedUser, // ✅ FIXED: use 'user' instead of 'responseData'
+    user: updatedUser,
   });
 });
 
