@@ -3,48 +3,51 @@ import { toast } from "react-hot-toast";
 import { axiosInstance } from "../../../components/utilities/axiosInstance";
 
 export const loginUserThunk = createAsyncThunk(
-    "user/login",
-    async ({ username, password }, { rejectWithValue }) => {
-        try {
-            const response = await axiosInstance.post('/users/login',
-                {
-                    username,
-                    password,
-                }
-            );
-            
-            toast.success("Login Successful");
-            return response.data;
-        } catch (error) {
-            console.error(error);
-            const errorOutput = error?.response?.data?.errMessage;
-            toast.error(errorOutput);
-            return rejectWithValue(errorOutput);
-        }
-    },
+  "user/login",
+  async ({ username, password }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post('/users/login',
+        {
+          username,
+          password,
+        });
+      const token = response?.data?.token;
+      if (token) {
+        localStorage.setItem("token", token);
+      }
+
+      toast.success("Login Successful");
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      const errorOutput = error?.response?.data?.errMessage;
+      toast.error(errorOutput);
+      return rejectWithValue(errorOutput);
+    }
+  },
 );
 
 export const registerUserThunk = createAsyncThunk(
-     "user/signup",
-    async ({fullName, username, password, gender }, { rejectWithValue }) => {
-        try {
-            const response = await axiosInstance.post('/users/register',
-                {
-                    fullName,
-                    username,
-                    password,
-                    gender,
-                }
-            );
-            toast.success("Registration Successfully!!");
-            return response.data;
-        } catch (error) {
-            console.error(error);
-            const errorOutput = error?.response?.data?.errMessage;
-            toast.error(errorOutput);
-            return rejectWithValue(errorOutput);
+  "user/signup",
+  async ({ fullName, username, password, gender }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post('/users/register',
+        {
+          fullName,
+          username,
+          password,
+          gender,
         }
-    },
+      );
+      toast.success("Registration Successfully!!");
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      const errorOutput = error?.response?.data?.errMessage;
+      toast.error(errorOutput);
+      return rejectWithValue(errorOutput);
+    }
+  },
 );
 
 export const logoutUserThunk = createAsyncThunk(
@@ -100,8 +103,11 @@ export const updateUserProfileThunk = createAsyncThunk(
       const formData = new FormData();
 
       if (updatedData.fullName) formData.append("fullName", updatedData.fullName);
+      if (updatedData.username) formData.append("username", updatedData.username);
       if (updatedData.bio) formData.append("bio", updatedData.bio);
-      if (updatedData.status) formData.append("status", updatedData.status);
+      if (updatedData.gender) formData.append("gender", updatedData.gender);
+      if (updatedData.password) formData.append("password", updatedData.password);
+      if (updatedData.confirmPassword) formData.append("confirmPassword", updatedData.confirmPassword);
       if (updatedData.avatar) formData.append("avatar", updatedData.avatar);
 
       const response = await axiosInstance.put("/users/update-profile", formData, {
@@ -109,7 +115,7 @@ export const updateUserProfileThunk = createAsyncThunk(
       });
 
       console.log("response from server:", response.data);
-      return response.data.user; 
+      return response.data.user;
     } catch (error) {
       console.error("Error updating profile:", error);
       const errorOutput =

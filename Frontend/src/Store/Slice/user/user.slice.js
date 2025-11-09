@@ -7,6 +7,7 @@ import { getOtherUsersThunk } from './user.thunk';
 import { updateUserProfileThunk } from './user.thunk';
 
 
+
 const initialState = {
   isAuthenticated: false,
   screenloading: false,
@@ -14,6 +15,7 @@ const initialState = {
   otherUsers: null,
   selectedUser: JSON.parse(localStorage.getItem("selectedUser")),
   buttonloading: false,
+
 
 };
 
@@ -104,7 +106,8 @@ export const userSlice = createSlice({
 
     builder.addCase(updateUserProfileThunk.fulfilled, (state, action) => {
       state.buttonloading = false;
-      state.userProfile = {...state.userProfile, ...action.payload,};
+      state.userProfile = {...state.userProfile, ...action.payload?.responseData?.newUser,};
+
     });
 
     builder.addCase(updateUserProfileThunk.rejected, (state) => {

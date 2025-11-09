@@ -1,8 +1,7 @@
 import axios from "axios";
-
 const DB_URL = import.meta.env.VITE_DB_URL;
 
-export const axiosInstance = axios.create({
+export const axiosInstanceAdmin = axios.create({
   baseURL: DB_URL,
   withCredentials: true,
   headers: {
@@ -10,10 +9,11 @@ export const axiosInstance = axios.create({
   },
 });
 
-axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token"); // ensure token saved after login
+axiosInstanceAdmin.interceptors.request.use((config) => {
+  const token = localStorage.getItem("adminToken");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
+

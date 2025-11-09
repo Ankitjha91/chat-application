@@ -22,18 +22,29 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String,
       required: false,
-      default: "", // default empty
+      default: "",
     },
     bio: {
       type: String,
       required: false,
       default: "Hey there! I'm using Chat App.",
     },
-    status: {
+    role: {
       type: String,
-      enum: ["Online", "Offline", "Busy", "Away"],
-      default: "Online",
+      enum: ["user", "admin"],
+      default: "user",
     },
+    isBanned: {
+      type: Boolean,
+      default: false,
+    },
+    isBlocked: {
+      type: Boolean,
+      default: false,
+    },
+
+
+
   },
   { timestamps: true }
 );

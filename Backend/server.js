@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url';
 
 
 
+
 // __dirname setup for ES module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,6 +23,7 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+
 const PORT = process.env.PORT || 5000;
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
@@ -32,6 +34,10 @@ import userRoutes from './routes/user.routes.js'
 import messageRoute from './routes/message.routes.js'
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/message", messageRoute);
+
+// Importing admin routes
+import adminRoutes from './admin/routes/admin.routes.js'
+app.use("/api/v1/admin", adminRoutes);
 
 // Importing user middlewares
 import { errorMiddleware } from './middlewares/error.middlewares.js';

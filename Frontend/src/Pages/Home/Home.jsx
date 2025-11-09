@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { initializeSocket } from "../../Store/Slice/socket/socket.slice";
 import { setOnlineUsers } from "../../Store/Slice/socket/socket.slice";
 import { setNewMessage } from "../../Store/Slice/message/message.slice";
-
+import AdminAccessButton from "../Admin/AdminAccessButton";
 
 const Home = () => {
 
@@ -39,6 +39,7 @@ const Home = () => {
 
   return (
     <div className="flex">
+      <AdminAccessButton />
       <UserSidebar />
       <MessageContainer />
     </div>

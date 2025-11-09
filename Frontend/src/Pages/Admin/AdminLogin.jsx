@@ -2,23 +2,17 @@ import React, { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { IoKeySharp } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { loginUserThunk } from "../../Store/Slice/user/user.thunk";
+import { axiosInstanceAdmin } from "../../components/utilities/axiosInstanceAdmin";
 
-const Login = () => {
+
+const AdminLogin = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { isAuthenticated } = useSelector((state) => state.userReducer);
   const [loginData, setLoginData] = useState({
     username: "",
     password: "",
   });
 
-  
-  useEffect(() => {
-    if (isAuthenticated) navigate("/");
-  }, [isAuthenticated]);
-
+  // ✅ Input change handler
   const handleInputChange = (e) => {
     setLoginData((prev) => ({
       ...prev,
@@ -26,17 +20,28 @@ const Login = () => {
     }));
   };
 
+  // ✅ Admin Login Handler
   const handleLogin = async () => {
-    const response = await dispatch(loginUserThunk(loginData));
-    if (response?.payload?.success) {
-      navigate("/");
+    try {
+      const response = await axiosInstanceAdmin.post("/admin/login", loginData);
+
+      if (response?.data?.token) {
+        // ✅ Save admin token
+        localStorage.setItem("adminToken", response.data.token);
+
+        alert("✅ Admin Login Successful!");
+        navigate("/admin/dashboard");
+      }
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data?.message || "❌ Login failed");
     }
   };
 
   return (
     <div className="flex justify-center items-center p-6 min-h-screen">
       <div className="max-w-[40rem] w-full flex flex-col gap-5 bg-base-200 p-6 rounded-lg">
-        <h2 className="text-2xl font-semibold">Please Login..!!</h2>
+        <h2 className="text-2xl font-semibold text-center">Admin Login</h2>
 
         <label className="input input-bordered flex items-center gap-2">
           <FaUser />
@@ -44,7 +49,7 @@ const Login = () => {
             type="text"
             name="username"
             className="grow"
-            placeholder="Username"
+            placeholder="Admin Username"
             onChange={handleInputChange}
           />
         </label>
@@ -54,8 +59,8 @@ const Login = () => {
           <input
             type="password"
             name="password"
-            placeholder="Password"
             className="grow"
+            placeholder="Admin Password"
             onChange={handleInputChange}
           />
         </label>
@@ -64,15 +69,15 @@ const Login = () => {
           Login
         </button>
 
-        <p>
-          Don't have an account? &nbsp;
-          <Link to="/signup" className="text-blue-400 underline">
-            Sign Up
+        {/* <p className="text-center">
+          Go back to &nbsp;
+          <Link to="/login" className="text-blue-400 underline">
+            User Login
           </Link>
-        </p>
+        </p> */}
       </div>
     </div>
   );
 };
 
-export default Login;
+export default AdminLogin;

@@ -9,6 +9,9 @@ import { Provider } from 'react-redux'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import { store } from './Store/store.js'
 import Profile from './Pages/Profile/Profile.jsx';
+import AdminLogin from './Pages/Admin/AdminLogin.jsx';
+import AdminDashboard from './Pages/Admin/AdminDashboard.jsx';
+import UserManagement from './Pages/Admin/UserManagement.jsx';
 
 
 
@@ -40,6 +43,18 @@ const router = createBrowserRouter([
     path: "/signup",
     element:
       <Signup />
+  },
+   {
+    path: "/admin/login",
+    element: <AdminLogin />
+  },
+   {
+    path: "/admin/dashboard",
+    element: <AdminDashboard />,
+  },
+  {
+    path: "/admin/users",
+    element: <UserManagement />,
   },
 ])
 
