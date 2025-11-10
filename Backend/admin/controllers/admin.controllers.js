@@ -103,7 +103,6 @@ export const toggleBlockUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-
     // Toggle block status
     user.isBlocked = !user.isBlocked;
     await user.save();
