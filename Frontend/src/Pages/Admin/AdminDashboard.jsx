@@ -74,14 +74,25 @@ const AdminDashboard = () => {
   return (
     <div className="p-6 bg-gray-900 min-h-screen text-white">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-        <button
-          onClick={() => navigate("/admin/users")}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
-        >
-          Go to User Management
-        </button>
-      </div>
+  <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+
+  <div className="flex gap-3">
+    <button
+      onClick={() => navigate("/admin/users")}
+      className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg"
+    >
+      Go to User Management
+    </button>
+
+    <button
+      onClick={() => navigate("/")}
+      className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg"
+    >
+      Logout
+    </button>
+  </div>
+</div>
+
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

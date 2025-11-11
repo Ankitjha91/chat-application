@@ -13,13 +13,13 @@ const initialState = {
   screenloading: false,
   userProfile: null,
   otherUsers: null,
-  selectedUser: JSON.parse(localStorage.getItem("selectedUser")),
+  // selectedUser: JSON.parse(localStorage.getItem("selectedUser")),
+  user: JSON.parse(localStorage.getItem("user") || "null"),
   buttonloading: false,
-
-
+  selectedUser: null,
 };
 
-export const userSlice = createSlice({
+export const userSlice = createSlice({ 
   name: 'user',
   initialState,
   reducers: {
