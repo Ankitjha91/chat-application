@@ -14,5 +14,5 @@
     "diffEditor.renderIndicators": true,
     "editor.glyphMargin": true,
     "scm.diffDecorationsGutterWidth": 3,
-    "workbench.colorTheme": "Default Dark+"
+    "workbench.colorTheme": "Dark+"
 }
